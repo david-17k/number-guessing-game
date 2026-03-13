@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Number Guessing Game</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+
+            /* 🌌 Starry background */
+            background: url('starry.jpg') no-repeat center center fixed;
+            background-size: cover;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-box {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            width: 340px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #444;
+            font-size: 16px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #aaa;
+            outline: none;
+            width: 120px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 8px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        #result {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        #chances {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        #score {
+            font-size: 18px;
+            margin-top: 15px;
+            color: #222;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-box">
+        <h1>🎯 Number Guessing</h1>
+        <p>Guess a number between 1 and 50:</p>
+        <input type="number" id="guess" min="1" max="50">
+        <br>
+        <button onclick="checkGuess()">Guess</button>
+        <button onclick="tryAgain()" style="display:none;" id="tryAgainBtn">Try Again</button>
+        <button onclick="playAgain()" style="display:none;" id="playAgainBtn">Play Again</button>
+        <p id="result"></p>
+        <p id="chances">Chances left: 5</p>
+        <p id="score"></p>
+    </div>
+
+    <script>
+        let secret = Math.floor(Math.random() * 50) + 1;
+        let chances = 5;
+        let attempts = 0;
+
+        function checkGuess() {
+            let guess = Number(document.getElementById("guess").value);
+            let result = document.getElementById("result");
+            let playAgainBtn = document.getElementById("playAgainBtn");
+            let tryAgainBtn = document.getElementById("tryAgainBtn");
+            let chancesDisplay = document.getElementById("chances");
+            let scoreDisplay = document.getElementById("score");
+
+            if (chances <= 0) return;
+
+            if (!guess) {
+                result.textContent = "⚠️ Please enter a number!";
+                result.style.color = "red";
+                return;
+            }
+
+            attempts++;
+            chances--;
+            chancesDisplay.textContent = "Chances left: " + chances;
+
+            if (guess < secret) {
+                result.textContent = "📉 Too low!";
+                result.style.color = "orange";
+                tryAgainBtn.style.display = "inline-block";
+            } else if (guess > secret) {
+                result.textContent = "📈 Too high!";
+                result.style.color = "blue";
+                tryAgainBtn.style.display = "inline-block";
+            } else {
+                result.textContent = "🎉 Correct!";
+                result.style.color = "green";
+                playAgainBtn.style.display = "inline-block";
+                tryAgainBtn.style.display = "none";
+                chances = 0;
+                scoreDisplay.textContent = "🏆 You guessed it in " + attempts + " attempts!";
+                return;
+            }
+
+            if (chances === 0) {
+                result.textContent = "❌ Game Over! The number was " + secret;
+                result.style.color = "red";
+                playAgainBtn.style.display = "inline-block";
+                tryAgainBtn.style.display = "none";
+                scoreDisplay.textContent = "😢 Better luck next time!";
+            }
+        }
+
+        function tryAgain() {
+            document.getElementById("guess").value = "";
+            document.getElementById("result").textContent = "🔁 Try again!";
+            document.getElementById("result").style.color = "black";
+            document.getElementById("tryAgainBtn").style.display = "none";
+        }
+
+        function playAgain() {
+            secret = Math.floor(Math.random() * 50) + 1;
+            chances = 5;
+            attempts = 0;
+            document.getElementById("guess").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("playAgainBtn").style.display = "none";
+            document.getElementById("tryAgainBtn").style.display = "none";
+            document.getElementById("chances").textContent = "Chances left: " + chances;
+            document.getElementById("score").textContent = "";
+        }
+    </script>
+</body>
+</html>
